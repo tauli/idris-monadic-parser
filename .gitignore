@@ -1,0 +1,10 @@
+*.ibc
+*.o
+*.a
+*.so
+*.dll
+*.dylib
+*.swp
+*~
+.DS_Store
+
