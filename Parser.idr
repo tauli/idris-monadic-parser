@@ -49,9 +49,7 @@ failure msg = P (\_ => Left msg)
 
 sat : (Parsable s o) => (o -> Bool) -> Parser s o
 sat p = do x <- item
-           guard (p x)
-           pure x
-           --if (p x) then pure x else empty
+           if (p x) then pure x else empty
 
 oneof : (Eq o, Parsable s o) => List o -> Parser s o
 oneof xs = sat (\x => elem x xs)
