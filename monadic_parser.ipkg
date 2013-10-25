@@ -1,0 +1,6 @@
+package monadicparser
+
+sourcedir = src
+modules = Parser, Parser.HTML5
+opts = ""
+
