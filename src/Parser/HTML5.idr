@@ -31,9 +31,9 @@ htmlSpace = oneof htmlSpaceList
 
 doctype : (Parsable s Char) => Parser s ()
 doctype = do
-    string "<!DOCTYPE"
+    stringNoCase "<!DOCTYPE"
     many htmlSpace
-    string "html"
+    stringNoCase "html"
     many htmlSpace
     many $ sat (/= '>')
     char '>'

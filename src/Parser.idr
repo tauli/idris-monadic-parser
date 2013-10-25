@@ -72,8 +72,14 @@ alphanum = sat isAlphaNum
 char : (Parsable s Char) => Char -> Parser s Char
 char c = sat (c ==)
 
+charNoCase : (Parsable s Char) => Char -> Parser s Char
+charNoCase c = sat ((toUpper c) ==) <|> sat ((toLower c) ==)
+
 string : (Parsable s Char) => String -> Parser s String
 string s = map pack (traverse char (unpack s))
+
+stringNoCase : (Parsable s Char) => String -> Parser s String
+stringNoCase s = map pack (traverse charNoCase (unpack s))
 
 -- combinators 
 
