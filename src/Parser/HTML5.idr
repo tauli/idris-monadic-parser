@@ -52,10 +52,7 @@ cdata = do
   return $ TagText $ pack c
 
 text : (Parsable s Char) => Parser s Tag
---text = map (TagText . pack) $ many1 $ sat (/= '<')
-text = do
-    t <- many1 $ sat (/= '<')
-    return $ (TagText . pack) t
+text = map (TagText . pack) $ many1 $ sat (/= '<')
 
 attributeName : (Parsable s Char) => Parser s String
 attributeName = map pack $ many1 $ sat (
