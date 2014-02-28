@@ -86,16 +86,15 @@ stringNoCase s = map pack (traverse charNoCase (unpack s))
 optional : (Parsable s o) => Parser s a -> Parser s (Maybe a)
 optional p = map Just p <|> pure Nothing
 
-mutual
-  many1 : (Parsable s o) => Parser s a -> Parser s (List a)
-  many1 p = [| p :: many p |]
+many : (Parsable s o) => Parser s a -> Parser s (List a)
+many p = do
+  i <- optional p
+  case i of
+       Nothing => pure Nil
+       Just a  => [| pure a :: many p |]
 
-  many : (Parsable s o) => Parser s a -> Parser s (List a)
-  many p = do
-    i <- optional p
-    case i of
-         Nothing => pure Nil
-         Just a  => [| pure a :: many p |]
+many1 : (Parsable s o) => Parser s a -> Parser s (List a)
+many1 p = [| p :: many p |]
 
 sepBy1 : (Parsable s o) => Parser s a -> Parser s b -> Parser s (List a)
 sepBy1 p s = [| p :: many (s $> p) |]
