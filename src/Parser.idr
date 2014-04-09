@@ -90,24 +90,24 @@ many : (Parsable s o) => Parser s a -> Parser s (List a)
 many p = do
   i <- optional p
   case i of
-       Nothing => pure Nil
-       Just a  => [| pure a :: many p |]
+       Nothing => with List pure Nil
+       Just a  => with List [| pure a :: many p |]
 
 many1 : (Parsable s o) => Parser s a -> Parser s (List a)
-many1 p = [| p :: many p |]
+many1 p = with List [| p :: many p |]
 
 sepBy1 : (Parsable s o) => Parser s a -> Parser s b -> Parser s (List a)
-sepBy1 p s = [| p :: many (s $> p) |]
+sepBy1 p s = with List [| p :: many (s $> p) |]
 
 sepBy : (Parsable s o) => Parser s a -> Parser s b -> Parser s (List a)
-sepBy p s = sepBy1 p s <|> pure Nil
+sepBy p s = with List (sepBy1 p s <|> pure Nil)
 
 manyTil : (Parsable s o) => Parser s a -> Parser s b -> Parser s (List a)
-manyTil p e = (e $> pure Nil) <|> manyTil' where
+manyTil p e = with List (e $> pure Nil) <|> manyTil' where
   manyTil' : (Parsable s o) => Parser s (List a)
   manyTil' = do
     i <- optional p
     case i of 
-         Nothing => pure Nil
-         Just a  => [| pure a :: manyTil p e |]
+         Nothing => with List pure Nil
+         Just a  => with List [| pure a :: manyTil p e |]
 
