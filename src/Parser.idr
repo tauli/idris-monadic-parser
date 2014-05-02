@@ -88,6 +88,12 @@ stringNoCase s = map pack (traverse charNoCase (unpack s))
 optional : (Parsable s o) => Parser s a -> Parser s (Maybe a)
 optional p = map Just p <|> pure Nothing
 
+except : (Parsable s o) => Parser s a -> Parser s a -> Parser s a
+except p q = P (\inp => case parse q inp of
+                        (Left _)  => parse p inp
+                        (Right _) => Left "empty"
+               )
+
 some : (Parsable s o) => Parser s a -> Nat -> Parser s (List a)
 some _  Z    = with List pure Nil
 some p (S n) = with List [| p :: lazy (some p n) |] <|> with List pure Nil
