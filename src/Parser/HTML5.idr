@@ -20,9 +20,6 @@ instance Show Tag where
 quoted : (Parsable s Char) => Parser s o -> Parser s o
 quoted p = char '\'' $> p <$ char '\'' <|> char '"' $> p <$ char '"'
 
-byteOrderMark : (Parsable s Char) => Parser s Char
-byteOrderMark = char '\xFEFF'
-
 htmlSpaceList : List Char
 htmlSpaceList = ['\x0009', '\x000A', '\x000C', '\x000D', '\x0020']
 

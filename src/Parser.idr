@@ -1,5 +1,7 @@
 module Parser
 
+%default total
+
 data Parser s o = P (s -> Either String (o, s))
 
 class Parsable s o where
@@ -86,24 +88,33 @@ stringNoCase s = map pack (traverse charNoCase (unpack s))
 optional : (Parsable s o) => Parser s a -> Parser s (Maybe a)
 optional p = map Just p <|> pure Nothing
 
+some : (Parsable s o) => Parser s a -> Nat -> Parser s (List a)
+some _  Z    = with List pure Nil
+some p (S n) = with List [| p :: lazy (some p n) |] <|> with List pure Nil
+
+covering
 many : (Parsable s o) => Parser s a -> Parser s (List a)
 many p = do
-  i <- optional p
-  case i of
-       Nothing => with List pure Nil
-       Just a  => with List [| pure a :: many p |]
+  (Just i) <- optional p
+    | Nothing => with List pure Nil
+  with List [| pure i :: many p |] 
 
+covering
 many1 : (Parsable s o) => Parser s a -> Parser s (List a)
 many1 p = with List [| p :: many p |]
 
+covering
 sepBy1 : (Parsable s o) => Parser s a -> Parser s b -> Parser s (List a)
 sepBy1 p s = with List [| p :: many (s $> p) |]
 
+covering
 sepBy : (Parsable s o) => Parser s a -> Parser s b -> Parser s (List a)
 sepBy p s = with List (sepBy1 p s <|> pure Nil)
 
+covering
 manyTil : (Parsable s o) => Parser s a -> Parser s b -> Parser s (List a)
 manyTil p e = with List (e $> pure Nil) <|> manyTil' where
+  covering
   manyTil' : (Parsable s o) => Parser s (List a)
   manyTil' = do
     i <- optional p
