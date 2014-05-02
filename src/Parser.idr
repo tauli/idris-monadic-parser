@@ -47,6 +47,10 @@ instance (Parsable s o) => Alternative (Parser s) where
 failure : String -> Parser s o
 failure msg = P (\_ => Left msg)
 
+infix 0 <?> 
+(<?>) : (Parsable s o) => Parser s a -> String -> Parser s a
+(<?>) p s = p <|> failure s
+
 -- primitive
 
 sat : (Parsable s o) => (o -> Bool) -> Parser s o
