@@ -102,6 +102,14 @@ some : (Parsable s o) => Parser s a -> Nat -> Parser s (List a)
 some _  Z    = with List pure Nil
 some p (S n) = with List [| p :: lazy (some p n) |] <|> with List pure Nil
 
+some1 : (Parsable s o) => Parser s a -> Nat -> Parser s (List a)
+some1 _ Z     = with List pure Nil
+some1 p (S n) = with List [| p :: some p n |]
+
+exactly : (Parsable s o) => Parser s a -> Nat -> Parser s (List a)
+exactly _ Z     = with List pure Nil
+exactly p (S n) = with List [| p :: exactly p n |]
+
 covering
 many : (Parsable s o) => Parser s a -> Parser s (List a)
 many p = do
