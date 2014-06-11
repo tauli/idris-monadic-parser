@@ -100,7 +100,11 @@ except p q = P (\inp => case parse q inp of
 
 some : (Parsable s o) => Parser s a -> Nat -> Parser s (List a)
 some _  Z    = with List pure Nil
-some p (S n) = with List [| p :: lazy (some p n) |] <|> with List pure Nil
+some p (S n) = do
+  (Just i) <- optional p
+    | Nothing => with List pure Nil
+  with List [| pure i :: some p n |]
+--some p (S n) = with List [| p :: (some p n) |] <|> with List pure Nil 
 
 some1 : (Parsable s o) => Parser s a -> Nat -> Parser s (List a)
 some1 _ Z     = with List pure Nil
