@@ -1,3 +1,10 @@
+Library currently broken
+========================
+
+This library won't compile with recent versions of idris. I have currently 
+no motivation to fix this but pull requests are of course welcome and i will 
+fix this eventually.
+
 A Monadic Parser written in idris
 =================================
 
